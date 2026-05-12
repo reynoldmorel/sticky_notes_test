@@ -1,46 +1,80 @@
-# Getting Started with Create React App
+# Sticky Notes Test
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A React + TypeScript sticky note board demo with drag, resize, inline editing, and local persistence.
 
-## Available Scripts
+## What this project does
 
-In the project directory, you can run:
+- Creates new notes on the board
+- Moves notes by dragging them while holding the mouse
+- Resizes notes using the resize handle
+- Edits note text directly inside the textarea
+- Persists note changes to `localStorage`
+- Simulates an async API layer using `setTimeout` and promises
+- Deletes notes by dragging them into the trash zone
+- Keeps the active note on top via `zIndex`
 
-### `npm start`
+## Core files
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- `src/components/Board.tsx`
+  - main board container
+  - manages note state and persistence
+  - handles note creation, movement, resizing, and deletion
+  - loads notes from the simulated storage API
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+- `src/components/Note.tsx`
+  - individual note rendering
+  - uses `useDrag` and `useResize` hooks
+  - updates note state and brings the note to front when clicked
 
-### `npm test`
+- `src/components/TrashZone.tsx`
+  - fixed trash drop target for deleting notes
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- `src/hooks/useDrag.ts`
+  - reusable drag helper
+  - attaches global mouse listeners and throttles move updates
 
-### `npm run build`
+- `src/hooks/useResize.ts`
+  - reusable resize helper for the note resize handle
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- `src/services/localStorageApi.ts`
+  - simulated async persistence layer on top of `localStorage`
+  - exposes `loadNotes`, `createNote`, `updateNote`, and `deleteNote`
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- `src/types/note.ts`
+  - shared note shape used across components
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## How persistence works
 
-### `npm run eject`
+The app does not call a real backend. Instead, it simulates API behavior by:
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+1. reading/writing from `localStorage`
+2. delaying operations with `setTimeout`
+3. returning `Promise` objects for async behavior
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+That means note actions feel asynchronous while still being persisted locally.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+## Running the project
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+Install dependencies:
 
-## Learn More
+```bash
+npm install
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Start the app:
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```bash
+npm start
+```
+
+Open the browser at `http://localhost:3000`.
+
+## Notes
+
+- The app shows a loading state while notes are fetched from the simulated storage.
+- Notes are positioned absolutely and can overlap, with the clicked note brought to the front.
+- Resize and drag are implemented with custom hooks for reusable gesture handling.
+
+# Code Review: SimpleCache (Kotlin)
+
+See also: [simple_cache_code_review.md](simple_cache_code_review.md)
